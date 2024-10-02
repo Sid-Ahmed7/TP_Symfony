@@ -21,16 +21,6 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
-    /**
-     * @var Collection<int, CategoryMedia>
-     */
-    #[ORM\OneToMany(targetEntity: CategoryMedia::class, mappedBy: 'category')]
-    private Collection $categoryMedia;
-
-    public function __construct()
-    {
-        $this->categoryMedia = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -61,33 +51,4 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection<int, CategoryMedia>
-     */
-    public function getCategoryMedia(): Collection
-    {
-        return $this->categoryMedia;
-    }
-
-    public function addCategoryMedium(CategoryMedia $categoryMedium): static
-    {
-        if (!$this->categoryMedia->contains($categoryMedium)) {
-            $this->categoryMedia->add($categoryMedium);
-            $categoryMedium->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategoryMedium(CategoryMedia $categoryMedium): static
-    {
-        if ($this->categoryMedia->removeElement($categoryMedium)) {
-            // set the owning side to null (unless already changed)
-            if ($categoryMedium->getCategory() === $this) {
-                $categoryMedium->setCategory(null);
-            }
-        }
-
-        return $this;
-    }
 }

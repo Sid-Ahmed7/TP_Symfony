@@ -21,17 +21,6 @@ class Language
     #[ORM\Column(length: 3)]
     private ?string $code = null;
 
-    /**
-     * @var Collection<int, MediaLanguage>
-     */
-    #[ORM\OneToMany(targetEntity: MediaLanguage::class, mappedBy: 'language')]
-    private Collection $mediaLanguages;
-
-    public function __construct()
-    {
-        $this->mediaLanguages = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -57,36 +46,6 @@ class Language
     public function setCode(string $code): static
     {
         $this->code = $code;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MediaLanguage>
-     */
-    public function getMediaLanguages(): Collection
-    {
-        return $this->mediaLanguages;
-    }
-
-    public function addMediaLanguage(MediaLanguage $mediaLanguage): static
-    {
-        if (!$this->mediaLanguages->contains($mediaLanguage)) {
-            $this->mediaLanguages->add($mediaLanguage);
-            $mediaLanguage->setLanguage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMediaLanguage(MediaLanguage $mediaLanguage): static
-    {
-        if ($this->mediaLanguages->removeElement($mediaLanguage)) {
-            // set the owning side to null (unless already changed)
-            if ($mediaLanguage->getLanguage() === $this) {
-                $mediaLanguage->setLanguage(null);
-            }
-        }
 
         return $this;
     }

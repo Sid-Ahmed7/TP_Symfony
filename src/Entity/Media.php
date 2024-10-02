@@ -38,17 +38,6 @@ class Media
     #[ORM\Column(enumType: MediaTypeEnum::class)]
     private ?MediaTypeEnum $media_type = null;
 
-    /**
-     * @var Collection<int, MediaLanguage>
-     */
-    #[ORM\OneToMany(targetEntity: MediaLanguage::class, mappedBy: 'media')]
-    private Collection $mediaLanguages;
-
-    /**
-     * @var Collection<int, CategoryMedia>
-     */
-    #[ORM\OneToMany(targetEntity: CategoryMedia::class, mappedBy: 'media')]
-    private Collection $categoryMedia;
 
     /**
      * @var Collection<int, PlaylistMedia>
@@ -58,8 +47,6 @@ class Media
 
     public function __construct()
     {
-        $this->mediaLanguages = new ArrayCollection();
-        $this->categoryMedia = new ArrayCollection();
         $this->playlistMedia = new ArrayCollection();
     }
 
@@ -151,67 +138,6 @@ class Media
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, MediaLanguage>
-     */
-    public function getMediaLanguages(): Collection
-    {
-        return $this->mediaLanguages;
-    }
-
-    public function addMediaLanguage(MediaLanguage $mediaLanguage): static
-    {
-        if (!$this->mediaLanguages->contains($mediaLanguage)) {
-            $this->mediaLanguages->add($mediaLanguage);
-            $mediaLanguage->setMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMediaLanguage(MediaLanguage $mediaLanguage): static
-    {
-        if ($this->mediaLanguages->removeElement($mediaLanguage)) {
-            // set the owning side to null (unless already changed)
-            if ($mediaLanguage->getMedia() === $this) {
-                $mediaLanguage->setMedia(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, CategoryMedia>
-     */
-    public function getCategoryMedia(): Collection
-    {
-        return $this->categoryMedia;
-    }
-
-    public function addCategoryMedium(CategoryMedia $categoryMedium): static
-    {
-        if (!$this->categoryMedia->contains($categoryMedium)) {
-            $this->categoryMedia->add($categoryMedium);
-            $categoryMedium->setMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategoryMedium(CategoryMedia $categoryMedium): static
-    {
-        if ($this->categoryMedia->removeElement($categoryMedium)) {
-            // set the owning side to null (unless already changed)
-            if ($categoryMedium->getMedia() === $this) {
-                $categoryMedium->setMedia(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, PlaylistMedia>
      */
