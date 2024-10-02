@@ -199,7 +199,7 @@ class Media
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            $category->addMmedia($this);
+            $category->addMedia($this);
         }
 
         return $this;
@@ -208,7 +208,7 @@ class Media
     public function removeCategory(Category $category): static
     {
         if ($this->categories->removeElement($category)) {
-            $category->removeMmedia($this);
+            $category->removeMedia($this);
         }
 
         return $this;
