@@ -8,8 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
+#[ORM\DiscriminatorMap(['serie' => Serie::class, 'movies' => Movie::class ])]
 class Media
 {
     #[ORM\Id]
@@ -34,10 +39,6 @@ class Media
 
     #[ORM\Column]
     private array $staff = [];
-
-    #[ORM\Column(enumType: MediaTypeEnum::class)]
-    private ?MediaTypeEnum $media_type = null;
-
 
     /**
      * @var Collection<int, PlaylistMedia>
@@ -141,17 +142,6 @@ class Media
         return $this;
     }
 
-    public function getMediaType(): ?MediaTypeEnum
-    {
-        return $this->media_type;
-    }
-
-    public function setMediaType(MediaTypeEnum $media_type): static
-    {
-        $this->media_type = $media_type;
-
-        return $this;
-    }
     /**
      * @return Collection<int, PlaylistMedia>
      */
