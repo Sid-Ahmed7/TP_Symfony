@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlaylistRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlaylistRepository::class)]
@@ -21,6 +23,17 @@ class Playlist
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, PlaylistMedia>
+     */
+    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'playlist')]
+    private Collection $playlistMedia;
+
+    public function __construct()
+    {
+        $this->playlistMedia = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +72,36 @@ class Playlist
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlaylistMedia>
+     */
+    public function getPlaylistMedia(): Collection
+    {
+        return $this->playlistMedia;
+    }
+
+    public function addPlaylistMedium(PlaylistMedia $playlistMedium): static
+    {
+        if (!$this->playlistMedia->contains($playlistMedium)) {
+            $this->playlistMedia->add($playlistMedium);
+            $playlistMedium->setPlaylist($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylistMedium(PlaylistMedia $playlistMedium): static
+    {
+        if ($this->playlistMedia->removeElement($playlistMedium)) {
+            // set the owning side to null (unless already changed)
+            if ($playlistMedium->getPlaylist() === $this) {
+                $playlistMedium->setPlaylist(null);
+            }
+        }
 
         return $this;
     }
