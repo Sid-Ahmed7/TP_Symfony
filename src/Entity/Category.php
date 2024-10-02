@@ -21,6 +21,17 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
+    /**
+     * @var Collection<int, Media>
+     */
+    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'categories')]
+    private Collection $mmedia;
+
+    public function __construct()
+    {
+        $this->mmedia = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -47,6 +58,30 @@ class Category
     public function setLabel(string $label): static
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMmedia(): Collection
+    {
+        return $this->mmedia;
+    }
+
+    public function addMmedia(Media $mmedia): static
+    {
+        if (!$this->mmedia->contains($mmedia)) {
+            $this->mmedia->add($mmedia);
+        }
+
+        return $this;
+    }
+
+    public function removeMmedia(Media $mmedia): static
+    {
+        $this->mmedia->removeElement($mmedia);
 
         return $this;
     }
