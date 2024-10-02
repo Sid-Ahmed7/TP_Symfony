@@ -51,10 +51,17 @@ class Media
     #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'mmedia')]
     private Collection $categories;
 
+    /**
+     * @var Collection<int, Language>
+     */
+    #[ORM\ManyToMany(targetEntity: Language::class, inversedBy: 'media')]
+    private Collection $languages;
+
     public function __construct()
     {
         $this->playlistMedia = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->languages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,6 +205,30 @@ class Media
         if ($this->categories->removeElement($category)) {
             $category->removeMmedia($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Language>
+     */
+    public function getLanguages(): Collection
+    {
+        return $this->languages;
+    }
+
+    public function addLanguage(Language $language): static
+    {
+        if (!$this->languages->contains($language)) {
+            $this->languages->add($language);
+        }
+
+        return $this;
+    }
+
+    public function removeLanguage(Language $language): static
+    {
+        $this->languages->removeElement($language);
 
         return $this;
     }
