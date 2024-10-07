@@ -8,5 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie extends Media
 {
-
+    public function __construct()
+    {
+        parent::__construct(); }
 }
