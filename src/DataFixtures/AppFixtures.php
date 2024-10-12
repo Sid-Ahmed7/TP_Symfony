@@ -56,18 +56,34 @@ class AppFixtures extends Fixture
     //Create movie or serie
     private function createMedia(string $title, string $type, ObjectManager $manager): Media
     {
-      
+      $staff = [
+        ['role' => 'Producteur', 'nom' => 'Jean Dupont'],
+        ['role' => 'Réalisateur', 'nom' => 'Jean Dupont'],
+        ['role' => 'Scénariste', 'nom' => 'Jean Dupont'],
+        ['role' => 'Cadreur', 'nom' => 'Jean Dupont'],
+        ['role' => 'Ingénieur du son', 'nom' => 'Jean Dupont'],
+        ['role' => 'Monteur', 'nom' => 'Jean Dupont'],
+      ];
+
+    $cast = [
+        ['role' => 'Acteur principal', 'nom' => 'Acteur 1'],
+        ['role' => 'Actrice principale', 'nom' => 'Actrice 2'],
+        ['role' => 'Acteur secondaire', 'nom' => 'Acteur 3']
+    ];
+    
         if ($type === "serie") {
 
             $serie = new Serie();
             $serie->setTitle($title);
-            $serie->setLongDescription("Longue description");
-            $serie->setShortDescription("Short description");
+            $serie->setLongDescription("Longue description de la serie");
+            $serie->setShortDescription("Courte description de la serie");
             $serie->setCoverImage('http://');
             $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
             foreach ($this->languages as $language) {
                 $serie->addLanguage($language);
             }
+            $serie->setStaff($staff);
+            $serie->setCasting($cast);
             $this->createSeasons($manager, $serie);
             $manager->persist($serie);
 
@@ -77,20 +93,22 @@ class AppFixtures extends Fixture
             
             $movie = new Movie();
             $movie->setTitle($title);
-            $movie->setLongDescription("Longue description");
-            $movie->setShortDescription("Short description");
+            $movie->setLongDescription("Longue description du film movie");
+            $movie->setShortDescription("Courte description du film");
             $movie->setCoverImage('http://');
             $movie->setReleaseDate(new \DateTime(datetime: "+7 days"));
             foreach ($this->languages as $language) {
                 $movie->addLanguage($language);
             }
+            $movie->setStaff($staff);
+            $movie->setCasting($cast);
             $manager->persist(object: $movie);
 
             return $movie;
 
 
         } else {
-            throw new \InvalidArgumentException("Type de média invalide : $type");
+            throw new \InvalidArgumentException("Invalid type media : $type");
         }
     }
 
