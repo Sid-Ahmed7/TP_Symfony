@@ -71,6 +71,9 @@ class Media
     #[ORM\OneToMany(targetEntity: WatchHistory::class, mappedBy: 'media')]
     private Collection $watchHistories;
 
+    #[ORM\Column]
+    private array $casting = [];
+
     public function __construct()
     {
         $this->playlistMedia = new ArrayCollection();
@@ -294,6 +297,18 @@ class Media
                 $watchHistory->setMedia(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCasting(): array
+    {
+        return $this->casting;
+    }
+
+    public function setCasting(array $casting): static
+    {
+        $this->casting = $casting;
 
         return $this;
     }
