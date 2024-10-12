@@ -69,7 +69,7 @@ class AppFixtures extends Fixture
     $cast = [
         ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
         ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
-        ['role' => 'Acteur secondaire', 'name' => 'Acteur 3']
+        ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
     ];
     
         if ($type === "serie") {
@@ -87,7 +87,7 @@ class AppFixtures extends Fixture
                 $serie->addCategory($category);
             }
             $serie->setStaff($staff);
-             $serie->setCasting($cast);
+            $serie->setCasting($cast);
             $this->createSeasons($manager, $serie);
             $manager->persist($serie);
 
@@ -108,7 +108,7 @@ class AppFixtures extends Fixture
                 $movie->addCategory($category);
             }
             $movie->setStaff($staff);
-            // $movie->setCasting($cast);
+            $movie->setCasting($cast);
             $manager->persist($movie);
 
             return $movie;
