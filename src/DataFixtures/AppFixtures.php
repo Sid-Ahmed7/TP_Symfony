@@ -8,6 +8,7 @@ use App\Entity\Language;
 use App\Entity\Media;
 use App\Entity\Serie;
 use App\Entity\Movie;
+use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -16,12 +17,12 @@ class AppFixtures extends Fixture
 
 
     private array $languages = [];
+    private array $categories =[];
     
     public function load(ObjectManager $manager): void
     {
-        $this->languages[] = $this->createLanguages('English', 'en', $manager);
-        $this->languages[] = $this->createLanguages('French', 'fr', $manager);
-        $this->languages[] = $this->createLanguages('Spanish', 'es', $manager);
+        $this->createLanguages($manager);
+        $this->createCategories($manager);
         $this->createMedia("Doctor Who", "serie",$manager);
         $this->createMedia("Fast and Furious", "movie",$manager);
         $manager->flush();
@@ -57,18 +58,18 @@ class AppFixtures extends Fixture
     private function createMedia(string $title, string $type, ObjectManager $manager): Media
     {
       $staff = [
-        ['role' => 'Producteur', 'nom' => 'Jean Dupont'],
-        ['role' => 'Réalisateur', 'nom' => 'Jean Dupont'],
-        ['role' => 'Scénariste', 'nom' => 'Jean Dupont'],
-        ['role' => 'Cadreur', 'nom' => 'Jean Dupont'],
-        ['role' => 'Ingénieur du son', 'nom' => 'Jean Dupont'],
-        ['role' => 'Monteur', 'nom' => 'Jean Dupont'],
+        ['role' => 'Producteur', 'name' => 'Jean Dupont'],
+        ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
+        ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
+        ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
+        ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
+        ['role' => 'Monteur', 'name' => 'Jean Dupont'],
       ];
 
     $cast = [
-        ['role' => 'Acteur principal', 'nom' => 'Acteur 1'],
-        ['role' => 'Actrice principale', 'nom' => 'Actrice 2'],
-        ['role' => 'Acteur secondaire', 'nom' => 'Acteur 3']
+        ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
+        ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
+        ['role' => 'Acteur secondaire', 'name' => 'Acteur 3']
     ];
     
         if ($type === "serie") {
@@ -82,8 +83,11 @@ class AppFixtures extends Fixture
             foreach ($this->languages as $language) {
                 $serie->addLanguage($language);
             }
+            foreach ($this->categories as $category) {
+                $serie->addCategory($category);
+            }
             $serie->setStaff($staff);
-            $serie->setCasting($cast);
+             $serie->setCasting($cast);
             $this->createSeasons($manager, $serie);
             $manager->persist($serie);
 
@@ -100,9 +104,12 @@ class AppFixtures extends Fixture
             foreach ($this->languages as $language) {
                 $movie->addLanguage($language);
             }
+            foreach ($this->categories as $category) {
+                $movie->addCategory($category);
+            }
             $movie->setStaff($staff);
-            $movie->setCasting($cast);
-            $manager->persist(object: $movie);
+            // $movie->setCasting($cast);
+            $manager->persist($movie);
 
             return $movie;
 
@@ -113,15 +120,43 @@ class AppFixtures extends Fixture
     }
 
     //Add language for serie or movie
-    private function createLanguages(string $nom, string $code, ObjectManager $manager): Language {
-        $language = new Language();
-        $language->setNom($nom);
-        $language->setCode($code);
-        $manager->persist($language);
+    private function createLanguages(ObjectManager $manager) {
+        $allLanguages =[
+            ['name' => 'English', 'code' => 'en'],
+            ['name' => 'French', 'code' => 'fr'],
+            ['name' => 'Spanish', 'code' => 'es']
+        ];
 
-        return $language;
+        $this->languages= [];
+        
+        foreach($allLanguages as $languages) {
+            $language = new Language();
+            $language->setName($languages['name']);
+            $language->setCode($languages['code']);
+            $manager->persist($language);
+            $this->languages[] = $language;
+        }
+    
     }
 
+    //Add category
+    private function createCategories(ObjectManager $manager) {
+
+        $allCategories =[
+            ['name' => 'Action', 'label' => 'Action'],
+            ['name' => 'Comedie', 'label' => 'Comedie']
+        ];
+
+        $this->categories = [];
+        foreach ($allCategories as $categories) {
+            $category = new Category();
+            $category->setName($categories['name']);
+            $category->setLabel($categories['label']);
+            $manager->persist($category);
+            $this->categories[] = $category;
+        }
+        
+    }
 
 
 
