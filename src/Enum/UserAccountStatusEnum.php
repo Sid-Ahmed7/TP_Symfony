@@ -14,12 +14,3 @@ enum UserAccountStatusEnum : string {
     case DELETED = 'deleted' ;
 
 }
-//User de type enum
-// enum App\enum\UserAccountStatusEnum
-//no
-//no
-//entite comment
-//FK ne pas faire
-//price 
-//ne pas mettre _id cela se met auto
-//User ManyToOne
