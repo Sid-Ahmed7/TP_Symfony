@@ -9,6 +9,10 @@ use App\Entity\Media;
 use App\Entity\Serie;
 use App\Entity\Movie;
 use App\Entity\Category;
+use App\Entity\User;
+use App\Entity\Subscription;
+use App\Entity\SubscriptionHistory;
+use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -18,6 +22,8 @@ class AppFixtures extends Fixture
 
     private array $languages = [];
     private array $categories =[];
+    private array $users = [];
+    private array $subs = [];
     
     public function load(ObjectManager $manager): void
     {
@@ -25,6 +31,9 @@ class AppFixtures extends Fixture
         $this->createCategories($manager);
         $this->createMedia("Doctor Who", "serie",$manager);
         $this->createMedia("Fast and Furious", "movie",$manager);
+        $this->createSubscriptions($manager);
+        $this->createUser($this->subs, $manager);
+        $this->createSubscriptionsHistory($this->users, $manager);
         $manager->flush();
     }
  
@@ -158,9 +167,59 @@ class AppFixtures extends Fixture
         
     }
 
+    //Add User and return a list of users
+    private function createUser(array $subs, ObjectManager $manager): array {
+        $statuses = UserAccountStatusEnum::cases();
+        $this->users = [];
+
+        for($i = 0; $i < 5; $i++) {
+             $user = new User();
+             $user->setUsername("user" . $i);
+             $user->setEmail($user->getUsername() . "@gmail.com");
+             $user->setPassword("bonjour");
+             $randomStatus = $statuses[array_rand($statuses)];
+             $user->setAccountStatus($randomStatus);
+             $randSub = $subs[array_rand($subs)];
+             $user->setCurrentSubscription($randSub);
+            $manager->persist($user);
+            $this->users[] = $user;
+        }
+
+        return $this->users;
+    }
 
 
-    
+    //Create Subscriptions
+    private function createSubscriptions(ObjectManager $manager) : array {
+       
+       $this->subs = [];
+
+        for($i = 0 ; $i < 5; $i++ ) {
+            $sub = new Subscription();
+            $sub->setName("Subscription" . $i);
+            $sub->setPrice(10 +(10 * $i));
+            $sub->setDuration(2);
+            $manager->persist($sub);
+            $this->subs[] = $sub;
+        }
+
+        return $this->subs;
+
+    }
+
+    //Create SubscriptionHistory
+    private function createSubscriptionsHistory(array $users, ObjectManager $manager) {
+        foreach ($users as $user) {
+
+            $currentSubscription = $user->getCurrentSubscription();
+            $subHistory = new SubscriptionHistory();
+            $subHistory->setSubscriber($user);
+            $subHistory->setSubscription($currentSubscription);
+            $subHistory->setStartAt(new \DateTimeImmutable());
+            $subHistory->setEndAt(new \DateTimeImmutable('+7 days'));
+            $manager->persist($subHistory);
+        }
+    }
 
 
 
