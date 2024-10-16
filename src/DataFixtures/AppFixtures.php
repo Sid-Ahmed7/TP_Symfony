@@ -169,7 +169,7 @@ class AppFixtures extends Fixture
 
     //Add User and return a list of users
     private function createUser(array $subs, ObjectManager $manager): array {
-        $statuses = UserAccountStatusEnum::cases();
+        $status = UserAccountStatusEnum::cases();
         $this->users = [];
 
         for($i = 0; $i < 5; $i++) {
@@ -177,7 +177,7 @@ class AppFixtures extends Fixture
              $user->setUsername("user" . $i);
              $user->setEmail($user->getUsername() . "@gmail.com");
              $user->setPassword("bonjour");
-             $randomStatus = $statuses[array_rand($statuses)];
+             $randomStatus = $status[array_rand($status)];
              $user->setAccountStatus($randomStatus);
              $randSub = $subs[array_rand($subs)];
              $user->setCurrentSubscription($randSub);
@@ -220,7 +220,6 @@ class AppFixtures extends Fixture
             $manager->persist($subHistory);
         }
     }
-
 
 
 }
