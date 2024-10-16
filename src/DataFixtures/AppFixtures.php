@@ -13,18 +13,18 @@ use App\Entity\User;
 use App\Entity\Subscription;
 use App\Entity\SubscriptionHistory;
 use App\Entity\Playlist;
+use App\Entity\PlaylistSubscription;
 use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-
-
     private array $languages = [];
     private array $categories =[];
     private array $users = [];
     private array $subs = [];
+    private array $playlists = [];
     
     public function load(ObjectManager $manager): void
     {
@@ -36,6 +36,7 @@ class AppFixtures extends Fixture
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
         $this->createPlaylist($this->users, $manager);
+        $this->createPlaylistSubscriptions($this->users, $manager);
         $manager->flush();
     }
  
@@ -43,7 +44,7 @@ class AppFixtures extends Fixture
     //Add episode 
     private function createEpisodes(ObjectManager $manager, Season $season)
     {
-        for ($j = 1; $j <= 10; $j++) { 
+        for ($j = 0; $j <= 10; $j++) { 
             $episode = new Episode();
             $episode->setSeason($season);
             $episode->setTitle('Episode ' . $j);
@@ -55,7 +56,7 @@ class AppFixtures extends Fixture
     
     //Add season for serie
     private function createSeasons(ObjectManager $manager, Serie $serie) {
-        for ($seasonNumber = 1; $seasonNumber <= 5; $seasonNumber++) {
+        for ($seasonNumber = 0; $seasonNumber <= 5; $seasonNumber++) {
             $season = new Season();
             $season->setSeries($serie);
             $season->setNumber($seasonNumber);
@@ -169,7 +170,7 @@ class AppFixtures extends Fixture
         
     }
 
-    //Add User and return a list of users
+    //Create users
     private function createUser(array $subs, ObjectManager $manager): array {
         $status = UserAccountStatusEnum::cases();
         $this->users = [];
@@ -220,22 +221,48 @@ class AppFixtures extends Fixture
             $subHistory->setStartAt(new \DateTimeImmutable());
             $subHistory->setEndAt(new \DateTimeImmutable('+7 days'));
             $manager->persist($subHistory);
+       
         }
     }
 
     //Create Playlist
-    private function createPlaylist(array $users, ObjectManager $manager) {
-        foreach ($users as $user) {
-            for($i = 0; $i < 5; $i++) {
+    private function createPlaylist(array $users, ObjectManager $manager) : array {
+        $this->playlists = [];
 
+        foreach ($users as $user) {
+            
                 $playlist = new Playlist();
                 $playlist->setCurator($user);
-                $playlist->setName("Playlist " . $i);
+                $playlist->setName("Playlist " . $user->getUsername());
                 $playlist->setCreatedAt(new \DateTimeImmutable());
                 $playlist->setUpdatedAt(new \DateTimeImmutable());
+                $user->addPlaylist($playlist);
                 $manager->persist($playlist);
+                $this->playlists[] = $playlist; 
+                
             }
+        return $this->playlists;
+    }
+
+    //Create playlist_subscriptions
+    private function createPlaylistSubscriptions(array $users, ObjectManager $manager) {
+        foreach ($users as $user) {
+            
+            $playlistSubscribers = $user->getPlaylists();
+
+            foreach ($playlistSubscribers as $playlistSubscriber) {
+                
+            $playlistSub = new PlaylistSubscription();
+            $playlistSub->setSubscriber($user);
+            $playlistSub->setPlaylist($playlistSubscriber);
+            $playlistSub->setSubscribedAt(new \DateTimeImmutable());
+            
+            }
+            
+            $manager->persist($playlistSub); 
+
         }
+
     }
 
 }
