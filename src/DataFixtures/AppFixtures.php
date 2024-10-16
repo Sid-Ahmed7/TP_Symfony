@@ -12,6 +12,7 @@ use App\Entity\Category;
 use App\Entity\User;
 use App\Entity\Subscription;
 use App\Entity\SubscriptionHistory;
+use App\Entity\Playlist;
 use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -34,6 +35,7 @@ class AppFixtures extends Fixture
         $this->createSubscriptions($manager);
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
+        $this->createPlaylist($this->users, $manager);
         $manager->flush();
     }
  
@@ -221,5 +223,19 @@ class AppFixtures extends Fixture
         }
     }
 
+    //Create Playlist
+    private function createPlaylist(array $users, ObjectManager $manager) {
+        foreach ($users as $user) {
+            for($i = 0; $i < 5; $i++) {
+
+                $playlist = new Playlist();
+                $playlist->setCurator($user);
+                $playlist->setName("Playlist " . $i);
+                $playlist->setCreatedAt(new \DateTimeImmutable());
+                $playlist->setUpdatedAt(new \DateTimeImmutable());
+                $manager->persist($playlist);
+            }
+        }
+    }
 
 }
