@@ -15,6 +15,7 @@ use App\Entity\SubscriptionHistory;
 use App\Entity\Playlist;
 use App\Entity\PlaylistSubscription;
 use App\Entity\PlaylistMedia;
+use App\Entity\WatchHistory;
 use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -31,8 +32,8 @@ class AppFixtures extends Fixture
     {
         $this->createLanguages($manager);
         $this->createCategories($manager);
-      $serie =  $this->createMedia("Doctor Who", "serie",$manager);
-      $movie =  $this->createMedia("Fast and Furious", "movie",$manager);
+        $serie =  $this->createMedia("Doctor Who", "serie",$manager);
+        $movie =  $this->createMedia("Fast and Furious", "movie",$manager);
         $this->createSubscriptions($manager);
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
@@ -40,6 +41,8 @@ class AppFixtures extends Fixture
         $this->createPlaylistSubscriptions($this->users, $manager);
         $this->createPlaylistMedia($serie, $this->playlists, $manager);
         $this->createPlaylistMedia($movie, $this->playlists, $manager);
+        $this->createWatchHistory($movie, $this->users, $manager);
+        $this->createWatchHistory($serie, $this->users, $manager);
         $manager->flush();
     }
  
@@ -275,7 +278,21 @@ class AppFixtures extends Fixture
         $playlistMedia->setAddedAt(addedAt: new \DateTimeImmutable());
         $playlistMedia->setPlaylist($playlist[array_rand($playlist)]);
 
-        $manager->persist(object: $playlistMedia);
+        $manager->persist($playlistMedia);
+    }
+
+    //Create watch_history
+    private function createWatchHistory(Media $media, array $users, ObjectManager $manager){
+        foreach ($users as $user) {
+            $watchHistory = new WatchHistory();
+            $watchHistory->setMedia($media);
+            $watchHistory->setWatcher($user);
+            $watchHistory->setLastWatchedAt(new \DateTimeImmutable());
+            $watchHistory->setNumberOfViews(rand(0, 10));
+
+            $manager->persist($watchHistory);
+
+        }
     }
 
 }
