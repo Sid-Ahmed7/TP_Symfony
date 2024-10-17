@@ -14,6 +14,7 @@ use App\Entity\Subscription;
 use App\Entity\SubscriptionHistory;
 use App\Entity\Playlist;
 use App\Entity\PlaylistSubscription;
+use App\Entity\PlaylistMedia;
 use App\Enum\UserAccountStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -30,13 +31,15 @@ class AppFixtures extends Fixture
     {
         $this->createLanguages($manager);
         $this->createCategories($manager);
-        $this->createMedia("Doctor Who", "serie",$manager);
-        $this->createMedia("Fast and Furious", "movie",$manager);
+      $serie =  $this->createMedia("Doctor Who", "serie",$manager);
+      $movie =  $this->createMedia("Fast and Furious", "movie",$manager);
         $this->createSubscriptions($manager);
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
         $this->createPlaylist($this->users, $manager);
         $this->createPlaylistSubscriptions($this->users, $manager);
+        $this->createPlaylistMedia($serie, $this->playlists, $manager);
+        $this->createPlaylistMedia($movie, $this->playlists, $manager);
         $manager->flush();
     }
  
@@ -263,6 +266,16 @@ class AppFixtures extends Fixture
 
         }
 
+    }
+
+    //Create playlistMedia
+    private function createPlaylistMedia(Media $media, array $playlist, ObjectManager $manager) {
+        $playlistMedia = new PlaylistMedia();
+        $playlistMedia->setMedia($media);
+        $playlistMedia->setAddedAt(addedAt: new \DateTimeImmutable());
+        $playlistMedia->setPlaylist($playlist[array_rand($playlist)]);
+
+        $manager->persist(object: $playlistMedia);
     }
 
 }
