@@ -16,7 +16,9 @@ use App\Entity\Playlist;
 use App\Entity\PlaylistSubscription;
 use App\Entity\PlaylistMedia;
 use App\Entity\WatchHistory;
+use App\Entity\Comment;
 use App\Enum\UserAccountStatusEnum;
+use App\Enum\CommentStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -32,17 +34,27 @@ class AppFixtures extends Fixture
     {
         $this->createLanguages($manager);
         $this->createCategories($manager);
+        //Create a serie
         $serie =  $this->createMedia("Doctor Who", "serie",$manager);
+        //Create a movie
         $movie =  $this->createMedia("Fast and Furious", "movie",$manager);
         $this->createSubscriptions($manager);
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
         $this->createPlaylist($this->users, $manager);
         $this->createPlaylistSubscriptions($this->users, $manager);
+        //Create a playlistMedia for a serie
         $this->createPlaylistMedia($serie, $this->playlists, $manager);
+        //Create a playlistMedia for a movie
         $this->createPlaylistMedia($movie, $this->playlists, $manager);
-        $this->createWatchHistory($movie, $this->users, $manager);
+        //Create a watchHistory for a serie
         $this->createWatchHistory($serie, $this->users, $manager);
+        //Create a watchHistory for a movie
+        $this->createWatchHistory($movie, $this->users, $manager);
+        //Create a comment for a serie
+        $this->createComment($serie, $this->users, $manager);
+        //Create a comment for a movie
+        $this->createComment($movie, $this->users, $manager);
         $manager->flush();
     }
  
@@ -186,10 +198,8 @@ class AppFixtures extends Fixture
              $user->setUsername("user" . $i);
              $user->setEmail($user->getUsername() . "@gmail.com");
              $user->setPassword("bonjour");
-             $randomStatus = $status[array_rand($status)];
-             $user->setAccountStatus($randomStatus);
-             $randSub = $subs[array_rand($subs)];
-             $user->setCurrentSubscription($randSub);
+             $user->setAccountStatus($status[array_rand($status)]);
+             $user->setCurrentSubscription($subs[array_rand($subs)]);
             $manager->persist($user);
             $this->users[] = $user;
         }
@@ -294,5 +304,35 @@ class AppFixtures extends Fixture
 
         }
     }
+
+    // Create comments
+    private function createComment(Media $media, array $users, ObjectManager $manager){
+        $commentStatus = CommentStatusEnum::cases();
+        $nbUser = count($users);
+
+        foreach ($users as $user) {
+
+            for( $i = 0 ; $i < 2; $i++ ) {
+                $comment = new Comment();
+                $comment->setPublisher($user);
+                $comment->setMedia($media);
+                $comment->setStatus($commentStatus[array_rand($commentStatus)]);
+                $comment->setContent("Comment " . chr(65 + $i / 2));
+
+                $manager->persist($comment);
+
+                $responseComment = new Comment();
+                $responseComment->setPublisher($users[array_rand($users)]);
+                $responseComment->setMedia($media);
+                $responseComment->setContent("Response Comment " . chr(97 + $i / 2));
+                $responseComment->setStatus($commentStatus[array_rand($commentStatus)]);
+                $responseComment->setParentComment($comment);
+
+                $manager->persist($responseComment);
+            }
+        }        
+
+    }
+
 
 }
