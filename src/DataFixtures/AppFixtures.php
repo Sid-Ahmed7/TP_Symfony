@@ -248,7 +248,7 @@ class AppFixtures extends Fixture
         foreach ($users as $user) {
             
                 $playlist = new Playlist();
-                $playlist->setCurator($user);
+                $playlist->setAuthor($user);
                 $playlist->setName("Playlist " . $user->getUsername());
                 $playlist->setCreatedAt(new \DateTimeImmutable());
                 $playlist->setUpdatedAt(new \DateTimeImmutable());
