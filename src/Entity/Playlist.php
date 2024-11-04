@@ -117,14 +117,14 @@ class Playlist
         return $this;
     }
 
-    public function getCurator(): ?User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
-    public function setCurator(?User $curator): static
+    public function setAuthor(?User $author): static
     {
-        $this->author = $curator;
+        $this->author = $author;
 
         return $this;
     }

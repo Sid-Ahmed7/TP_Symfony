@@ -208,7 +208,7 @@ class User
     {
         if (!$this->playlists->contains($playlist)) {
             $this->playlists->add($playlist);
-            $playlist->setCurator($this);
+            $playlist->setAuthor($this);
         }
 
         return $this;
@@ -218,8 +218,8 @@ class User
     {
         if ($this->playlists->removeElement($playlist)) {
             // set the owning side to null (unless already changed)
-            if ($playlist->getCurator() === $this) {
-                $playlist->setCurator(null);
+            if ($playlist->getAuthor() === $this) {
+                $playlist->setAuthor(null);
             }
         }
 

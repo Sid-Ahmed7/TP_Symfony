@@ -50,7 +50,7 @@ class Media
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'mmedia')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'media')]
     private Collection $categories;
 
     /**
