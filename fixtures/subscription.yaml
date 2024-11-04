@@ -1,0 +1,16 @@
+App\Entity\Subscription:
+  subscription_monthly:
+    name: "Abonnement mensuel"
+    price: 50
+    duration: 1
+  subscription_annual:
+    name: "Abonnement annuel"
+    price: 100
+    duration: 12
+
+App\Entity\SubscriptionHistory:
+  subsciption_history:
+    startAt: '<dateTimeBetween("-1 year", "now")>'
+    endAt: '<dateTimeBetween("now", "+1 year")>'
+    subscriber: "@user_*"
+    subscription: "@subscription_*"
