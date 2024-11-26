@@ -103,7 +103,7 @@ class AppFixtures extends Fixture
      
      for($i = 0; $i < 5; $i++) {
         $serie = new Serie();
-        $serie->setTitle("Film " . $i);
+        $serie->setTitle("Serie " . $i);
         $serie->setLongDescription("Longue description de la serie");
         $serie->setShortDescription("Courte description de la serie");
         $serie->setCoverImage('https://picsum.photos/400/550?random=' . $i);
@@ -156,10 +156,9 @@ class AppFixtures extends Fixture
             }
             $movie->setStaff($staff);
             $movie->setCasting($cast);
-            $manager->persist($movie);
-
-            return $movie;
+            $manager->persist($movie);  
         }
+        return $movie;
     }
 
     //Add language for serie or movie
