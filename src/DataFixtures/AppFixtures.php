@@ -35,9 +35,9 @@ class AppFixtures extends Fixture
         $this->createLanguages($manager);
         $this->createCategories($manager);
         //Create a serie
-        $serie =  $this->createMedia("Doctor Who", "serie",$manager);
+        $serie =  $this->createSerie($manager);
         //Create a movie
-        $movie =  $this->createMedia("Fast and Furious", "movie",$manager);
+        $movie =  $this->createMovie($manager);
         $this->createSubscriptions($manager);
         $this->createUser($this->subs, $manager);
         $this->createSubscriptionsHistory($this->users, $manager);
@@ -83,9 +83,48 @@ class AppFixtures extends Fixture
             
         } 
     }
+     //Create serie
+     private function createSerie(ObjectManager $manager): Media
+     {
+       $staff = [
+         ['role' => 'Producteur', 'name' => 'Jean Dupont'],
+         ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
+         ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
+         ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
+         ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
+         ['role' => 'Monteur', 'name' => 'Jean Dupont'],
+       ];
+ 
+     $cast = [
+         ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
+         ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
+         ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
+     ];
+     
+     $serie = new Serie();
+     $serie->setTitle("Doctor Who");
+     $serie->setLongDescription("Longue description de la serie");
+     $serie->setShortDescription("Courte description de la serie");
+     $serie->setCoverImage('http://');
+     $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
+     foreach ($this->languages as $language) {
+         $serie->addLanguage($language);
+     }
+     foreach ($this->categories as $category) {
+         $serie->addCategory($category);
+     }
+     $serie->setStaff($staff);
+     $serie->setCasting($cast);
+     $this->createSeasons($manager, $serie);
+     $manager->persist($serie);
 
-    //Create movie or serie
-    private function createMedia(string $title, string $type, ObjectManager $manager): Media
+     return $serie;
+
+ 
+     }
+
+    //Create movie 
+    private function createMovie(ObjectManager $manager): Media
     {
       $staff = [
         ['role' => 'Producteur', 'name' => 'Jean Dupont'],
@@ -102,31 +141,9 @@ class AppFixtures extends Fixture
         ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
     ];
     
-        if ($type === "serie") {
-
-            $serie = new Serie();
-            $serie->setTitle($title);
-            $serie->setLongDescription("Longue description de la serie");
-            $serie->setShortDescription("Courte description de la serie");
-            $serie->setCoverImage('http://');
-            $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
-            foreach ($this->languages as $language) {
-                $serie->addLanguage($language);
-            }
-            foreach ($this->categories as $category) {
-                $serie->addCategory($category);
-            }
-            $serie->setStaff($staff);
-            $serie->setCasting($cast);
-            $this->createSeasons($manager, $serie);
-            $manager->persist($serie);
-
-            return $serie;
-            
-        } elseif ($type === "movie") {
             
             $movie = new Movie();
-            $movie->setTitle($title);
+            $movie->setTitle("Fast and Furious");
             $movie->setLongDescription("Longue description du film movie");
             $movie->setShortDescription("Courte description du film");
             $movie->setCoverImage('http://');
@@ -143,10 +160,6 @@ class AppFixtures extends Fixture
 
             return $movie;
 
-
-        } else {
-            throw new \InvalidArgumentException("Invalid type media : $type");
-        }
     }
 
     //Add language for serie or movie
