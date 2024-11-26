@@ -8,11 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SerieController extends AbstractController
 {
-    #[Route('/serie', name: 'app_serie')]
-    public function index(): Response
+    #[Route(path: '/serie', name: 'page_detail_serie')]
+    public function detailSerie(): Response
     {
-        return $this->render('serie/index.html.twig', [
-            'controller_name' => 'SerieController',
-        ]);
+        return $this->render(view: 'serie/detail_serie.html.twig');
     }
 }
