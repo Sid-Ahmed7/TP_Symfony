@@ -9,10 +9,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ResetController extends AbstractController
 {
     #[Route('/reset', name: 'app_reset')]
-    public function index(): Response
+    public function reset(): Response
     {
-        return $this->render('reset/reset.html.twig', [
-            'controller_name' => 'ResetController',
-        ]);
+        return $this->render('reset/reset.html.twig');
     }
 }

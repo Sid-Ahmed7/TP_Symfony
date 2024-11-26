@@ -12,7 +12,7 @@ use App\Repository\PlaylistSubscriptionRepository;
 class ListController extends AbstractController
 {
     #[Route('/list', name: 'app_list')]
-    public function index(
+    public function list(
         PlaylistRepository $playlistRepository,
         PlaylistSubscriptionRepository $subscription
     ): Response

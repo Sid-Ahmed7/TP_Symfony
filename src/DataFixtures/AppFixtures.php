@@ -220,22 +220,29 @@ class AppFixtures extends Fixture
     }
 
 
-    //Create Subscriptions
-    private function createSubscriptions(ObjectManager $manager) : array {
-       
-       $this->subs = [];
-
-        for($i = 0 ; $i < 5; $i++ ) {
+    private function createSubscriptions(ObjectManager $manager): array
+    {
+        $this->subs = [];
+    
+        // Create subscriptions
+        for ($i = 0; $i < 5; $i++) {
             $sub = new Subscription();
-            $sub->setName("Subscription" . $i);
-            $sub->setPrice(10 +(10 * $i));
-            $sub->setDuration(2);
+            $sub->setName("Subscription " . ($i + 1));
+            $price = 10 + (10 * $i);
+            //Sub Mensual
+            if ($i % 2 == 0) { 
+                $sub->setPrice($price); 
+                $sub->setDuration(1); 
+            } else { 
+                //Sub annual
+                $sub->setPrice($price * 12); 
+                $sub->setDuration(12); 
+            }
             $manager->persist($sub);
             $this->subs[] = $sub;
         }
-
+    
         return $this->subs;
-
     }
 
     //Create SubscriptionHistory

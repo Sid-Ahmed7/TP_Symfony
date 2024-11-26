@@ -10,7 +10,7 @@ use App\Repository\MovieRepository;
 class MovieController extends AbstractController
 {
     #[Route(path: '/movie', name: 'page_detail_movie')]
-    public function detail(MovieRepository $movieRepository): Response
+    public function detailMovie(): Response
     {
         return $this->render( 'movie/detail.html.twig');
     }

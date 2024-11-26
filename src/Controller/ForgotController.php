@@ -9,10 +9,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ForgotController extends AbstractController
 {
     #[Route('/forgot', name: 'app_forgot')]
-    public function index(): Response
+    public function forgot(): Response
     {
-        return $this->render('forgot/forgot.html.twig', [
-            'controller_name' => 'ForgotController',
-        ]);
+        return $this->render('forgot/forgot.html.twig');
     }
 }

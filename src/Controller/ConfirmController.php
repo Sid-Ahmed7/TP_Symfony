@@ -9,10 +9,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ConfirmController extends AbstractController
 {
     #[Route('/confirm', name: 'app_confirm')]
-    public function index(): Response
+    public function confirm(): Response
     {
-        return $this->render('confirm/confirm.html.twig', [
-            'controller_name' => 'ConfirmController',
-        ]);
+        return $this->render('confirm/confirm.html.twig');
     }
 }

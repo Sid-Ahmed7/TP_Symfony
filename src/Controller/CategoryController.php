@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryController extends AbstractController
 {
-    #[Route('/categories', name: 'app_category')]
+    #[Route('/category', name: 'app_category')]
     public function index(MovieRepository $movieRepository, CategoryRepository $categoryRepository): Response
     {
         $movies = $movieRepository->findAll();
@@ -26,7 +26,7 @@ class CategoryController extends AbstractController
     }
     
 
-    #[Route('/categories/{id}', name: 'app_category_Id')]
+    #[Route('/category/{id}', name: 'app_category_Id')]
     public function category(
         Category $category,
     ): Response
