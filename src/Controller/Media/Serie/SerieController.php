@@ -6,11 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use App\Entity\Serie;
+
 class SerieController extends AbstractController
 {
-    #[Route(path: '/serie', name: 'page_detail_serie')]
-    public function detailSerie(): Response
+    #[Route(path: '/serie/{id}', name: 'page_detail_serie')]
+    public function detailSerie(Serie $serie): Response
     {
-        return $this->render(view: 'serie/detail_serie.html.twig');
+        return $this->render('serie/detail_serie.html.twig', [
+            'serie' => $serie
+        ]);
     }
 }
