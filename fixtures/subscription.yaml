@@ -3,10 +3,6 @@ App\Entity\Subscription:
     name: "Abonnement mensuel"
     price: 50
     duration: 1
-  subscription_annual:
-    name: "Abonnement annuel"
-    price: 100
-    duration: 12
 
 App\Entity\SubscriptionHistory:
   subsciption_history:
