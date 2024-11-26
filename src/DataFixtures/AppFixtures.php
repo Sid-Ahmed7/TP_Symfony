@@ -101,25 +101,25 @@ class AppFixtures extends Fixture
          ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
      ];
      
-     $serie = new Serie();
-     $serie->setTitle("Doctor Who");
-     $serie->setLongDescription("Longue description de la serie");
-     $serie->setShortDescription("Courte description de la serie");
-     $serie->setCoverImage('http://');
-     $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
-     foreach ($this->languages as $language) {
-         $serie->addLanguage($language);
-     }
-     foreach ($this->categories as $category) {
-         $serie->addCategory($category);
-     }
-     $serie->setStaff($staff);
-     $serie->setCasting($cast);
-     $this->createSeasons($manager, $serie);
-     $manager->persist($serie);
-
+     for($i = 0; $i < 5; $i++) {
+        $serie = new Serie();
+        $serie->setTitle("Film " . $i);
+        $serie->setLongDescription("Longue description de la serie");
+        $serie->setShortDescription("Courte description de la serie");
+        $serie->setCoverImage('https://picsum.photos/400/550?random=' . $i);
+        $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
+        foreach ($this->languages as $language) {
+            $serie->addLanguage($language);
+        }
+        foreach ($this->categories as $category) {
+            $serie->addCategory($category);
+        }
+        $serie->setStaff($staff);
+        $serie->setCasting($cast);
+        $this->createSeasons($manager, $serie);
+        $manager->persist($serie);
+    }
      return $serie;
-
  
      }
 
@@ -141,12 +141,12 @@ class AppFixtures extends Fixture
         ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
     ];
     
-            
+        for($i = 0; $i < 5; $i++) {
             $movie = new Movie();
-            $movie->setTitle("Fast and Furious");
+            $movie->setTitle("Movie " . $i);
             $movie->setLongDescription("Longue description du film movie");
             $movie->setShortDescription("Courte description du film");
-            $movie->setCoverImage('http://');
+            $movie->setCoverImage('https://picsum.photos/400/550?random=' . $i);
             $movie->setReleaseDate(new \DateTime(datetime: "+7 days"));
             foreach ($this->languages as $language) {
                 $movie->addLanguage($language);
@@ -159,7 +159,7 @@ class AppFixtures extends Fixture
             $manager->persist($movie);
 
             return $movie;
-
+        }
     }
 
     //Add language for serie or movie
