@@ -41,5 +41,14 @@ class MediaRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
+public function findTendances(int $maxResults): array
+{
+    return $this->createQueryBuilder('m')
+        ->leftJoin('m.watchHistories', 'wh')
+        ->groupBy('m.id')
+        ->orderBy('COUNT(wh)', 'DESC')
+        ->setMaxResults($maxResults)
+        ->getQuery()
+        ->getResult();
+}
 }
