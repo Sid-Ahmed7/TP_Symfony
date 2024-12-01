@@ -74,6 +74,9 @@ class Media
     #[ORM\Column]
     private array $casting = [];
 
+    #[ORM\Column]
+    private ?float $score = 0.0;
+
     public function __construct()
     {
         $this->playlistMedia = new ArrayCollection();
@@ -309,6 +312,18 @@ class Media
     public function setCasting(array $casting): static
     {
         $this->casting = $casting;
+
+        return $this;
+    }
+
+    public function getScore(): ?float
+    {
+        return $this->score;
+    }
+
+    public function setScore(float $score): static
+    {
+        $this->score = $score;
 
         return $this;
     }

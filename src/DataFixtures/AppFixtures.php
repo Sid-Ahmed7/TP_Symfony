@@ -21,15 +21,21 @@ use App\Enum\UserAccountStatusEnum;
 use App\Enum\CommentStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private array $languages = [];
-    private array $categories =[];
+    private array $categories = [];
     private array $users = [];
     private array $subs = [];
     private array $playlists = [];
-    
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
     public function load(ObjectManager $manager): void
     {
         $this->createLanguages($manager);
@@ -39,7 +45,7 @@ class AppFixtures extends Fixture
         //Create a movie
         $movie =  $this->createMovie($manager);
         $this->createSubscriptions($manager);
-        $this->createUser($this->subs, $manager);
+        $this->createUser($this->subs, $manager, $this->passwordHasher);
         $this->createSubscriptionsHistory($this->users, $manager);
         $this->createPlaylist($this->users, $manager);
         $this->createPlaylistSubscriptions($this->users, $manager);
@@ -57,91 +63,91 @@ class AppFixtures extends Fixture
         $this->createComment($movie, $this->users, $manager);
         $manager->flush();
     }
- 
+
 
     //Add episode 
     private function createEpisodes(ObjectManager $manager, Season $season)
     {
-        for ($j = 0; $j <= 10; $j++) { 
+        for ($j = 0; $j <= 10; $j++) {
             $episode = new Episode();
             $episode->setSeason($season);
             $episode->setTitle('Episode ' . $j);
-            $episode->setDuration(45); 
+            $episode->setDuration(45);
             $episode->setReleasedAt(new \DateTimeImmutable("+{$j} weeks"));
             $manager->persist($episode);
         }
     }
-    
+
     //Add season for serie
-    private function createSeasons(ObjectManager $manager, Serie $serie) {
+    private function createSeasons(ObjectManager $manager, Serie $serie)
+    {
         for ($seasonNumber = 0; $seasonNumber <= 5; $seasonNumber++) {
             $season = new Season();
             $season->setSeries($serie);
             $season->setNumber($seasonNumber);
             $this->createEpisodes($manager, $season);
             $manager->persist($season);
-            
-        } 
-    }
-     //Create serie
-     private function createSerie(ObjectManager $manager): Media
-     {
-       $staff = [
-         ['role' => 'Producteur', 'name' => 'Jean Dupont'],
-         ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
-         ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
-         ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
-         ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
-         ['role' => 'Monteur', 'name' => 'Jean Dupont'],
-       ];
- 
-     $cast = [
-         ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
-         ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
-         ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
-     ];
-     
-     for($i = 0; $i < 5; $i++) {
-        $serie = new Serie();
-        $serie->setTitle("Serie " . $i);
-        $serie->setLongDescription("Longue description de la serie");
-        $serie->setShortDescription("Courte description de la serie");
-        $serie->setCoverImage('https://picsum.photos/400/550?random=' . $i);
-        $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
-        foreach ($this->languages as $language) {
-            $serie->addLanguage($language);
         }
-        foreach ($this->categories as $category) {
-            $serie->addCategory($category);
-        }
-        $serie->setStaff($staff);
-        $serie->setCasting($cast);
-        $this->createSeasons($manager, $serie);
-        $manager->persist($serie);
     }
-     return $serie;
- 
-     }
+    //Create serie
+    private function createSerie(ObjectManager $manager): Media
+    {
+        $staff = [
+            ['role' => 'Producteur', 'name' => 'Jean Dupont'],
+            ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
+            ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
+            ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
+            ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
+            ['role' => 'Monteur', 'name' => 'Jean Dupont'],
+        ];
+
+        $cast = [
+            ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
+            ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
+            ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
+        ];
+
+        for ($i = 0; $i < 5; $i++) {
+            $serie = new Serie();
+            $serie->setTitle("Serie " . $i);
+            $serie->setLongDescription("Longue description de la serie");
+            $serie->setShortDescription("Courte description de la serie");
+            $serie->setCoverImage('https://picsum.photos/400/550?random=' . $i);
+            $serie->setReleaseDate(new \DateTime(datetime: "+7 days"));
+            foreach ($this->languages as $language) {
+                $serie->addLanguage($language);
+            }
+            foreach ($this->categories as $category) {
+                $serie->addCategory($category);
+            }
+            $serie->setStaff($staff);
+            $serie->setCasting($cast);
+            $this->createSeasons($manager, $serie);
+            $serie->setScore(mt_rand(0, 1000) / 100);
+            $manager->persist($serie);
+        }
+        return $serie;
+    }
 
     //Create movie 
     private function createMovie(ObjectManager $manager): Media
     {
-      $staff = [
-        ['role' => 'Producteur', 'name' => 'Jean Dupont'],
-        ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
-        ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
-        ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
-        ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
-        ['role' => 'Monteur', 'name' => 'Jean Dupont'],
-      ];
+        $staff = [
+            ['role' => 'Producteur', 'name' => 'Jean Dupont'],
+            ['role' => 'Réalisateur', 'name' => 'Jean Dupont'],
+            ['role' => 'Scénariste', 'name' => 'Jean Dupont'],
+            ['role' => 'Cadreur', 'name' => 'Jean Dupont'],
+            ['role' => 'Ingénieur du son', 'name' => 'Jean Dupont'],
+            ['role' => 'Monteur', 'name' => 'Jean Dupont'],
+        ];
 
-    $cast = [
-        ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
-        ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
-        ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
-    ];
-    
-        for($i = 0; $i < 5; $i++) {
+        $cast = [
+            ['role' => 'Acteur principal', 'name' => 'Acteur 1'],
+            ['role' => 'Actrice principale', 'name' => 'Actrice 2'],
+            ['role' => 'Acteur secondaire', 'name' => 'Acteur 3'],
+        ];
+
+        for ($i = 0; $i < 5; $i++) {
             $movie = new Movie();
             $movie->setTitle("Movie " . $i);
             $movie->setLongDescription("Longue description du film movie");
@@ -156,35 +162,37 @@ class AppFixtures extends Fixture
             }
             $movie->setStaff($staff);
             $movie->setCasting($cast);
-            $manager->persist($movie);  
+            $movie->setScore(mt_rand(0, 1000 / 100));
+            $manager->persist($movie);
         }
         return $movie;
     }
 
     //Add language for serie or movie
-    private function createLanguages(ObjectManager $manager) {
-        $allLanguages =[
+    private function createLanguages(ObjectManager $manager)
+    {
+        $allLanguages = [
             ['name' => 'English', 'code' => 'en'],
             ['name' => 'French', 'code' => 'fr'],
             ['name' => 'Spanish', 'code' => 'es']
         ];
 
-        $this->languages= [];
-        
-        foreach($allLanguages as $languages) {
+        $this->languages = [];
+
+        foreach ($allLanguages as $languages) {
             $language = new Language();
             $language->setName($languages['name']);
             $language->setCode($languages['code']);
             $manager->persist($language);
             $this->languages[] = $language;
         }
-    
     }
 
     //Add category
-    private function createCategories(ObjectManager $manager) {
+    private function createCategories(ObjectManager $manager)
+    {
 
-        $allCategories =[
+        $allCategories = [
             ['name' => 'Action', 'label' => 'Action'],
             ['name' => 'Comedie', 'label' => 'Comedie']
         ];
@@ -197,21 +205,22 @@ class AppFixtures extends Fixture
             $manager->persist($category);
             $this->categories[] = $category;
         }
-        
     }
 
     //Create users
-    private function createUser(array $subs, ObjectManager $manager): array {
+    private function createUser(array $subs, ObjectManager $manager, UserPasswordHasherInterface $passwordHasher): array
+    {
         $status = UserAccountStatusEnum::cases();
         $this->users = [];
 
-        for($i = 0; $i < 5; $i++) {
-             $user = new User();
-             $user->setUsername("user" . $i);
-             $user->setEmail($user->getUsername() . "@gmail.com");
-             $user->setPassword("bonjour");
-             $user->setAccountStatus($status[array_rand($status)]);
-             $user->setCurrentSubscription($subs[array_rand($subs)]);
+        for ($i = 0; $i < 5; $i++) {
+            $user = new User();
+            $user->setUsername("user" . $i);
+            $user->setEmail($user->getUsername() . "@gmail.com");
+            $hashedPassword = $passwordHasher->hashPassword($user, "bonjour");
+            $user->setPassword($hashedPassword);
+            $user->setAccountStatus($status[array_rand($status)]);
+            $user->setCurrentSubscription($subs[array_rand($subs)]);
             $manager->persist($user);
             $this->users[] = $user;
         }
@@ -223,30 +232,25 @@ class AppFixtures extends Fixture
     private function createSubscriptions(ObjectManager $manager): array
     {
         $this->subs = [];
-    
+
         // Create subscriptions
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 12; $i++) {
             $sub = new Subscription();
             $sub->setName("Subscription " . ($i + 1));
-            $price = 10 + (10 * $i);
-            //Sub Mensual
-            if ($i % 2 == 0) { 
-                $sub->setPrice($price); 
-                $sub->setDuration(1); 
-            } else { 
-                //Sub annual
-                $sub->setPrice($price * 12); 
-                $sub->setDuration(12); 
-            }
+            $price = 10 * ($i + 1);
+            //Sub Mensual 
+            $sub->setPrice($price);
+            $sub->setDuration($i + 1);
             $manager->persist($sub);
             $this->subs[] = $sub;
         }
-    
+
         return $this->subs;
     }
 
     //Create SubscriptionHistory
-    private function createSubscriptionsHistory(array $users, ObjectManager $manager) {
+    private function createSubscriptionsHistory(array $users, ObjectManager $manager)
+    {
         foreach ($users as $user) {
 
             $currentSubscription = $user->getCurrentSubscription();
@@ -256,52 +260,50 @@ class AppFixtures extends Fixture
             $subHistory->setStartAt(new \DateTimeImmutable());
             $subHistory->setEndAt(new \DateTimeImmutable('+7 days'));
             $manager->persist($subHistory);
-       
         }
     }
 
     //Create Playlist
-    private function createPlaylist(array $users, ObjectManager $manager) : array {
+    private function createPlaylist(array $users, ObjectManager $manager): array
+    {
         $this->playlists = [];
 
         foreach ($users as $user) {
-            
-                $playlist = new Playlist();
-                $playlist->setAuthor($user);
-                $playlist->setName("Playlist " . $user->getUsername());
-                $playlist->setCreatedAt(new \DateTimeImmutable());
-                $playlist->setUpdatedAt(new \DateTimeImmutable());
-                $user->addPlaylist($playlist);
-                $manager->persist($playlist);
-                $this->playlists[] = $playlist; 
-                
-            }
+
+            $playlist = new Playlist();
+            $playlist->setAuthor($user);
+            $playlist->setName("Playlist " . $user->getUsername());
+            $playlist->setCreatedAt(new \DateTimeImmutable());
+            $playlist->setUpdatedAt(new \DateTimeImmutable());
+            $user->addPlaylist($playlist);
+            $manager->persist($playlist);
+            $this->playlists[] = $playlist;
+        }
         return $this->playlists;
     }
 
     //Create playlist_subscriptions
-    private function createPlaylistSubscriptions(array $users, ObjectManager $manager) {
+    private function createPlaylistSubscriptions(array $users, ObjectManager $manager)
+    {
         foreach ($users as $user) {
-            
+
             $playlistSubscribers = $user->getPlaylists();
 
             foreach ($playlistSubscribers as $playlistSubscriber) {
-                
-            $playlistSub = new PlaylistSubscription();
-            $playlistSub->setSubscriber($user);
-            $playlistSub->setPlaylist($playlistSubscriber);
-            $playlistSub->setSubscribedAt(new \DateTimeImmutable());
-            
+
+                $playlistSub = new PlaylistSubscription();
+                $playlistSub->setSubscriber($user);
+                $playlistSub->setPlaylist($playlistSubscriber);
+                $playlistSub->setSubscribedAt(new \DateTimeImmutable());
             }
-            
-            $manager->persist($playlistSub); 
 
+            $manager->persist($playlistSub);
         }
-
     }
 
     //Create playlistMedia
-    private function createPlaylistMedia(Media $media, array $playlist, ObjectManager $manager) {
+    private function createPlaylistMedia(Media $media, array $playlist, ObjectManager $manager)
+    {
         $playlistMedia = new PlaylistMedia();
         $playlistMedia->setMedia($media);
         $playlistMedia->setAddedAt(addedAt: new \DateTimeImmutable());
@@ -311,7 +313,8 @@ class AppFixtures extends Fixture
     }
 
     //Create watch_history
-    private function createWatchHistory(Media $media, array $users, ObjectManager $manager){
+    private function createWatchHistory(Media $media, array $users, ObjectManager $manager)
+    {
         foreach ($users as $user) {
             $watchHistory = new WatchHistory();
             $watchHistory->setMedia($media);
@@ -320,18 +323,18 @@ class AppFixtures extends Fixture
             $watchHistory->setNumberOfViews(rand(0, 10));
 
             $manager->persist($watchHistory);
-
         }
     }
 
     // Create comments
-    private function createComment(Media $media, array $users, ObjectManager $manager){
+    private function createComment(Media $media, array $users, ObjectManager $manager)
+    {
         $commentStatus = CommentStatusEnum::cases();
         $nbUser = count($users);
 
         foreach ($users as $user) {
 
-            for( $i = 0 ; $i < 2; $i++ ) {
+            for ($i = 0; $i < 2; $i++) {
                 $comment = new Comment();
                 $comment->setPublisher($user);
                 $comment->setMedia($media);
@@ -349,9 +352,6 @@ class AppFixtures extends Fixture
 
                 $manager->persist($responseComment);
             }
-        }        
-
+        }
     }
-
-
 }

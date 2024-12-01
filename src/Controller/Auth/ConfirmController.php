@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Auth;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +11,6 @@ class ConfirmController extends AbstractController
     #[Route('/confirm', name: 'app_confirm')]
     public function confirm(): Response
     {
-        return $this->render('confirm/confirm.html.twig');
+        return $this->render('auth/confirm/confirm.html.twig');
     }
 }

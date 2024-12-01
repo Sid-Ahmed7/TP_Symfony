@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Other;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +11,6 @@ class DefaultController extends AbstractController
     #[Route('/default', name: 'app_default')]
     public function default(): Response
     {
-        return $this->render('default/default.html.twig');
+        return $this->render('other/default/default.html.twig');
     }
 }

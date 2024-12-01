@@ -13,7 +13,7 @@ class SerieController extends AbstractController
     #[Route(path: '/serie/{id}', name: 'page_detail_serie')]
     public function detailSerie(Serie $serie): Response
     {
-        return $this->render('serie/detail_serie.html.twig', [
+        return $this->render('media/serie/detail_serie.html.twig', [
             'serie' => $serie
         ]);
     }

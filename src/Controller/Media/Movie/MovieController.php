@@ -12,7 +12,7 @@ class MovieController extends AbstractController
     #[Route(path: '/movie/{id}', name: 'page_detail_movie')]
     public function detailMovie(Movie $movie): Response
     {
-        return $this->render( 'movie/detail.html.twig', [
+        return $this->render( 'media/movie/detail.html.twig', [
             'movie' => $movie
         ]);
     }

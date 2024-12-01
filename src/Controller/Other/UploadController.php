@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Other;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +11,6 @@ class UploadController extends AbstractController
     #[Route('/upload', name: 'app_upload')]
     public function upload(): Response
     {
-        return $this->render('upload/upload.html.twig');
+        return $this->render('other/upload/upload.html.twig');
     }
 }
