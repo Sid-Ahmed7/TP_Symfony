@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" :class="isDark ? 'dark' : 'light'" x-data="{ isDark: false }">
+{% extends 'base.html.twig' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="Mazyar">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="style/style.css" rel="stylesheet">
-    <meta name="author" content="Mazyar">
-    <title>Mes films</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% block title %}>Mes films{% endblock %}
 
-<body class="font-montserrat text-sm bg-white dark:bg-zinc-900 " >
-<div class="flex min-h-screen  2xl:max-w-screen-2xl 2xl:mx-auto 2xl:border-x-2 2xl:border-gray-200 dark:2xl:border-zinc-700 ">
-    
-    {% include 'parts/left-menu.html.twig' %}
-
-    <main class=" flex-1 py-10  px-5 sm:px-10 ">
+{% block content %}
 
         <header class=" font-bold text-lg flex items-center  gap-x-3 md:hidden mb-12 ">
                 <span class="mr-6">
@@ -215,13 +200,4 @@
 
             </div>
         </section>
-
-    </main>
-
-	{% include 'parts/right-sidebar.html.twig' %}
-
-</div>
-
-</body>
-
-</html>
+{% endblock %}
