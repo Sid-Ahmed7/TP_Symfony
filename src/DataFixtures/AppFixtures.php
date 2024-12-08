@@ -219,6 +219,7 @@ class AppFixtures extends Fixture
             $user->setEmail($user->getUsername() . "@gmail.com");
             $hashedPassword = $passwordHasher->hashPassword($user, "bonjour");
             $user->setPassword($hashedPassword);
+            $user->setRoles(['ROLE_USER']);
             $user->setAccountStatus($status[array_rand($status)]);
             $user->setCurrentSubscription($subs[array_rand($subs)]);
             $manager->persist($user);
