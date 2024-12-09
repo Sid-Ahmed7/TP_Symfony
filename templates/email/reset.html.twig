@@ -18,7 +18,7 @@
             <a href="{{ resetUrl }}" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold text-lg rounded-lg hover:bg-blue-700 transition-colors">Réinitialiser mon mot de passe</a>
         </div>
 
-        <p class="mt-6 text-gray-600 text-sm">Ce lien expirera le {{ expiration_date|date('d/m/Y H:i') }}.</p>
+        <p class="mt-6 text-gray-600 text-sm">Ce lien expirera le {{ expirationDate|date('d/m/Y H:i') }}.</p>
 
         <p class="mt-2 text-gray-600 text-sm">Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.</p>
 
