@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
@@ -16,6 +18,8 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Le nom de la catégorie doit contenir au moins {{ limit }} caractères.', maxMessage: 'Le nom de la catégorie ne peut pas contenir plus de {{limit}} caractères.')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
