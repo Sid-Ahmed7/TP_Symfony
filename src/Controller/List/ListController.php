@@ -5,6 +5,8 @@ namespace App\Controller\List;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 use App\Repository\PlaylistRepository;
 use App\Repository\PlaylistSubscriptionRepository;
@@ -13,6 +15,7 @@ use App\Entity\User;
 class ListController extends AbstractController
 {
     #[Route('/list', name: 'app_list')]
+    #[IsGranted('ROLE_USER')]
     public function list(
         PlaylistRepository $playlistRepository,
         PlaylistSubscriptionRepository $subscription
@@ -30,7 +33,7 @@ class ListController extends AbstractController
         $mySubscribedPlaylists = $user->getPlaylistSubscriptions();
         return $this->render('list/lists.html.twig', [
             'myPlaylists' => $myPlaylists,
-             'mySubscribedPlaylists' => $mySubscribedPlaylists,
+             'mySubscribedPlaylists' => $mySubscribedPlaylists
         ]);
     }
 }
