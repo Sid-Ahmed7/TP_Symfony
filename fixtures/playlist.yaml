@@ -6,11 +6,16 @@ App\Entity\Playlist:
     author: "@user_*"
 
 App\Entity\PlaylistMedia:
-  playlistMedia_{1..10}:
+  playlistMedia_movie_{1..10}:
     addedAt: '<dateTimeBetween("-1 year", "now")>'
-    playlist: "@playlist_*"
     media: "@movies_*"
+    playlist: "@playlist_*"
 
+  playlistMedia_serie_{1..10}:
+    addedAt: '<dateTimeBetween("-1 year", "now")>'
+    media: "@series_*"
+    playlist: "@playlist_*"
+    
 App\Entity\PlaylistSubscription:
   playlistSubscription_{1..10}:
     playlist: "@playlist_*"

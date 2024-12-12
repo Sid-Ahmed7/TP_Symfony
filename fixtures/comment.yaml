@@ -1,0 +1,19 @@
+App\Entity\Comment:
+
+comment_template (template):
+  content: "sentence<>"
+  status: !php/const 'App\Enum\CommentStatusEnum::PUBLISH'
+  publisher : "@user_*"
+  media: "@media_*"
+
+  comment_with_status_pending extends(comment_template):
+    status: !php/const 'App\Enum\CommentStatusEnum::PENDING'
+
+  comment_with_status_rejected extends(comment_template):
+    status: !php/const 'App\Enum\CommentStatusEnum::REJECTED'
+
+  comment_{1..20} extends(comment_template):
+
+
+
+  
