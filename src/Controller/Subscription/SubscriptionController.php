@@ -18,9 +18,17 @@ class SubscriptionController extends AbstractController
         SubscriptionRepository $subscriptionRepository
     ): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $currentSubscription = $user->getCurrentSubscription();
         $subscriptions = $subscriptionRepository->findAll();
 
         return $this->render('subscriptions/subscriptions.html.twig', [
+            'currentSubscription' => $currentSubscription,
             'subscriptions' => $subscriptions
         ]);
     }

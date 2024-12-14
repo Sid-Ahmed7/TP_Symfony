@@ -124,6 +124,7 @@ class AppFixtures extends Fixture
             $serie->setCasting($cast);
             $this->createSeasons($manager, $serie);
             $serie->setScore(mt_rand(0, 1000) / 100);
+            $serie->setType('serie');
             $manager->persist($serie);
         }
         return $serie;
@@ -163,6 +164,7 @@ class AppFixtures extends Fixture
             $movie->setStaff($staff);
             $movie->setCasting($cast);
             $movie->setScore(mt_rand(0, 1000 / 100));
+            $movie->setType('movies');
             $manager->persist($movie);
         }
         return $movie;
