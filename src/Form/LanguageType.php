@@ -16,11 +16,6 @@ class LanguageType extends AbstractType
         $builder
             ->add('name')
             ->add('code')
-            ->add('media', EntityType::class, [
-                'class' => Media::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
         ;
     }
 
