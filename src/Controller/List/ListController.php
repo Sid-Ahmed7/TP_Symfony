@@ -25,14 +25,18 @@ class ListController extends AbstractController
 
         // Check if the user is authenticated
         if(!$user) {
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_login');
         }
 
         // Get the user's playlists and subscribed playlists 
-        $myPlaylists = $user->getPlaylists();
+        $playlists = $user->getPlaylists();
         $mySubscribedPlaylists = $user->getPlaylistSubscriptions();
+        foreach ($playlists as $playlist) {
+        $playlist->getPlaylistMedia();
+
+        }
         return $this->render('list/lists.html.twig', [
-            'myPlaylists' => $myPlaylists,
+            'playlists' => $playlists,
              'mySubscribedPlaylists' => $mySubscribedPlaylists
         ]);
     }
