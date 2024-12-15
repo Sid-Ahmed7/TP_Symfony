@@ -1,5 +1,5 @@
                 <nav class="flex space-x-6 text-gray-400 font-medium">
-                    <a href="#" class="hover:text-gray-700">Séries</a>
-                    <a href="#" class="text-gray-700">Films</a>
+                    <a href={{path ('page_series')}} class="{% if app.current_route == 'page_series' %} text-red-700 {% else %} text-gray-700 {% endif %}">Séries</a>
+                    <a href={{path ('page_movies')}} class="{% if app.current_route == 'page_movies' %} text-red-700 {% else %} text-gray-700 {% endif %}">Films</a>
                 </nav>
         

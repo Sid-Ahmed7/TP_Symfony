@@ -3,6 +3,7 @@
 namespace App\Controller\Media\Movie;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\MediaRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Movie;
@@ -16,4 +17,15 @@ class MovieController extends AbstractController
             'movie' => $movie
         ]);
     }
+
+    #[Route(path: '/movies', name: 'page_movies')]
+    public function showAllSerie(MediaRepository $mediaRepository): Response
+    {
+        $movies = $mediaRepository->findAllMovies();
+
+        return $this->render('media/display_media.html.twig', [
+            'movies' => $movies
+        ]);
+    }
+
 }

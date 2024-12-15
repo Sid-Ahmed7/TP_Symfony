@@ -90,5 +90,23 @@ public function findByCategory(Category $category): array
 }
 
 
+public function findAllSeries(): array
+{
+    return $this->createQueryBuilder('m')
+        ->where('m INSTANCE OF App\Entity\Serie')  
+        ->getQuery()
+        ->getResult();
+}
+
+
+public function findAllMovies(): array
+{
+    return $this->createQueryBuilder('m')
+        ->where('m INSTANCE OF App\Entity\Movie')  
+        ->getQuery()
+        ->getResult();
+}
+
+
 
 }

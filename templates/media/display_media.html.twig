@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if series is defined %}Liste des séries{% elseif movies is defined %}Liste des films{% endif %}{% endblock %}
+
+{% block content %}
+{% include ('parts/nav_type_media/nav.html.twig') %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6">
+        {% if series is defined %}
+            Liste des séries
+        {% elseif movies is defined %}
+            Liste des films
+        {% endif %}
+    </h1>
+
+    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for mediaItem in series ?? movies %}
+
+{% include ('parts/cards/media_card.html.twig') %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
