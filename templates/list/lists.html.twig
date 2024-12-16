@@ -58,8 +58,9 @@
 					{% for playlist in playlists %}
 						<option value="{{playlist.id}}">{{playlist.name}}</option>
 					{% endfor %}
-
-
+					{% for subscription in subscribedPlaylists %}
+						<option value="{{ subscription.playlist.id }}">{{ subscription.playlist.name }}</option>
+					{% endfor %}
 				</select>
 
 				<div class="pointer-events-none absolute right-2 inset-y-0 flex items-center px-2">
@@ -69,27 +70,32 @@
 			</div>
 		</div>
 	</section>
-  {% if playlists %}
-    <section class="mt-9">
-        <ul class="grid grid-cols-2 gap-y-5 sm:grid-cols-3 gap-x-5">
-		{% for playlist in playlists %}
-            {% for playlistMedia in playlist.playlistMedia %}
-               
-			{% include ('parts/cards/list_card.html.twig') %}
-			{% endfor %}
-            {% endfor %}
-        </ul>
+	{% if playlists %}
+		<section class="mt-9">
+			<ul class="grid grid-cols-2 gap-y-5 sm:grid-cols-3 gap-x-5">
+				{% for playlist in playlists %}
+					{% for playlistMedia in playlist.playlistMedia %}
 
-		<button class="flex flex-col items-center mt-9 w-full">
-			<div class="relative flex w-full bg-red-600 flex-row p-3 items-center justify-center rounded-lg overflow-hidden border cursor-pointer transition hover:bg-red-700 text-white">
-				<span class="font-bold mr-2">
-					<svg class="h-6 w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24">
-						<title>plus-circle</title><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
-				</span>
-				<span class="capitalize font-medium text-md">Charger + de films</span>
-			</div>
-		</button>
-	</section>
-  
-{% endif %}
+						{% include ('parts/cards/list_card.html.twig') %}
+					{% endfor %}
+				{% endfor %}
+			</ul>
+
+			<button class="flex flex-col items-center mt-9 w-full">
+				<div class="relative flex w-full bg-red-600 flex-row p-3 items-center justify-center rounded-lg overflow-hidden border cursor-pointer transition hover:bg-red-700 text-white">
+					<span class="font-bold mr-2">
+						<svg class="h-6 w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24">
+							<title>plus-circle</title><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+					</span>
+					<span class="capitalize font-medium text-md">Charger + de films</span>
+				</div>
+			</button>
+		</section>
+	{% else %}
+		<div class="flex flex-col items-center justify-center mt-9">
+			<h1 class="text-2xl font-bold">Aucune playlist disponible</h1>
+		</div>
+
+
+	{% endif %}
 {% endblock %}
