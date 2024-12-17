@@ -227,6 +227,16 @@ class AppFixtures extends Fixture
             $manager->persist($user);
             $this->users[] = $user;
         }
+        for ($i = 0; $i < 2; $i++) {
+            $admin = new User();
+            $admin->setUsername("admin" . $i);
+            $admin->setEmail($admin->getUsername() . "@gmail.com");
+            $admin->setPlainPassword("adminPassword");
+            $admin->setRoles(['ROLE_ADMIN']);
+            $admin->setAccountStatus(UserAccountStatusEnum::ACTIVE);
+            $manager->persist($admin);
+            $this->users[] = $admin;
+        }
 
         return $this->users;
     }
