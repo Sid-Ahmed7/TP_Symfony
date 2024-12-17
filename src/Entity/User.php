@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -27,8 +26,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+   
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    private ?string $plainPassword = null;
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+    }
 
 
     #[ORM\Column(enumType: UserAccountStatusEnum::class)]
@@ -122,7 +134,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
-
     public function setPassword(string $password): static
     {
         $this->password = $password;
@@ -314,6 +325,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function eraseCredentials(): void{
 
+            $this->plainPassword = null;
     }
 
     public function getUserIdentifier(): string{

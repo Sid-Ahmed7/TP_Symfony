@@ -210,7 +210,7 @@ class AppFixtures extends Fixture
     }
 
     //Create users
-    private function createUser(array $subs, ObjectManager $manager, UserPasswordHasherInterface $passwordHasher): array
+    private function createUser(array $subs, ObjectManager $manager): array
     {
         $status = UserAccountStatusEnum::cases();
         $this->users = [];
@@ -219,8 +219,8 @@ class AppFixtures extends Fixture
             $user = new User();
             $user->setUsername("user" . $i);
             $user->setEmail($user->getUsername() . "@gmail.com");
-            $hashedPassword = $passwordHasher->hashPassword($user, "bonjour");
-            $user->setPassword($hashedPassword);
+            // $hashedPassword = $passwordHasher->hashPassword($user, "bonjour");
+            $user->setPlainPassword("bonjour");
             $user->setRoles(['ROLE_USER']);
             $user->setAccountStatus($status[array_rand($status)]);
             $user->setCurrentSubscription($subs[array_rand($subs)]);
@@ -357,4 +357,5 @@ class AppFixtures extends Fixture
             }
         }
     }
+
 }
