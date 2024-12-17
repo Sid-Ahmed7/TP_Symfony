@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Media;
+use App\Entity\Media\Admin;
 use App\Form\MediaType;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\EntityManagerInterface;
