@@ -1,58 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Media{% endblock %}
+{% block title %}Détails du Média{% endblock %}
 
-{% block body %}
-    <h1>Media</h1>
+{% block content %}
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-semibold mb-4">Détails du Média</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ medium.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ medium.title }}</td>
-            </tr>
-            <tr>
-                <th>ShortDescription</th>
-                <td>{{ medium.shortDescription }}</td>
-            </tr>
-            <tr>
-                <th>LongDescription</th>
-                <td>{{ medium.longDescription }}</td>
-            </tr>
-            <tr>
-                <th>ReleaseDate</th>
-                <td>{{ medium.releaseDate ? medium.releaseDate|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CoverImage</th>
-                <td>{{ medium.coverImage }}</td>
-            </tr>
-            <tr>
-                <th>Staff</th>
-                <td>{{ medium.staff ? medium.staff|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Casting</th>
-                <td>{{ medium.casting ? medium.casting|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Score</th>
-                <td>{{ medium.score }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ medium.type }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full table-auto">
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Id</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.id }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Titre</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.title }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Description courte</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.shortDescription }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Description longue</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.longDescription }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Date de sortie</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.releaseDate ? medium.releaseDate|date('Y-m-d') : 'Non spécifiée' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Image de couverture</th>
+                        <td class="px-6 py-4 text-gray-900">
+                            {% if medium.coverImage %}
+                                <img src="{{ asset(medium.coverImage) }}" alt="Cover Image" class="w-32 h-32 object-cover rounded">
+                            {% else %}
+                                <span class="text-gray-500">Aucune image</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Staff</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.staff ? medium.staff|json_encode : 'Non spécifié' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Casting</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.casting ? medium.casting|json_encode : 'Non spécifié' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Score</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.score ? medium.score : 'Non noté' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="px-6 py-4 text-left text-gray-600 font-medium">Type</th>
+                        <td class="px-6 py-4 text-gray-900">{{ medium.type }}</td>
+                    </tr>
 
-    <a href="{{ path('app_media_index') }}">back to list</a>
+                    {% if medium.type == 'serie' %}
+                        <tr>
+                            <th class="px-6 py-4 text-left text-gray-600 font-medium">Saisons</th>
+                            <td class="px-6 py-4 text-gray-900">
+                                {% if medium.seasons is not empty %}
+                                    <ul class="list-disc pl-5">
+                                        {% for season in medium.seasons %}
+                                            <li class="py-1">
+                                                <strong>Saison {{ season.number }}:</strong>
+                                                {% if season.episodes is not empty %}
+                                                    <ul class="list-decimal pl-5">
+                                                        {% for episode in season.episodes %}
+                                                            <li>{{ episode.title }} (Durée: {{ episode.duration }} min, Date de sortie: {{ episode.releasedAt|date('Y-m-d') }})</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% else %}
+                                                    <span>Aucun épisode disponible</span>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span>Aucune saison disponible</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_media_edit', {'id': medium.id}) }}">edit</a>
-
-    {{ include('media/_delete_form.html.twig') }}
+        <div class="flex justify-between items-center mt-6">
+            <a href="{{ path('app_media_index') }}" class="text-blue-500 hover:text-blue-700">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+            <div class="space-x-4">
+                <a href="{{ path('app_media_edit', {'id': medium.id}) }}" class="bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-2 px-4 rounded-md">
+                    Modifier
+                </a>
+                {{ include('media/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
