@@ -3,20 +3,22 @@
 namespace App\Form;
 
 use App\Entity\Language;
-use App\Entity\Media;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class LanguageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('code')
-        ;
+            ->add('name', TextType::class, [
+                'label' => 'Nom de la langue',
+            ])
+            ->add('code', TextType::class, [
+                'label' => 'Code de la langue', 
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
